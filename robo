@@ -1,0 +1,405 @@
+package roboc;
+
+import jxl.write.WriteException;
+import jxl.read.biff.BiffException;
+import jxl.write.WritableCell;
+import jxl.write.WritableSheet;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.write.WritableWorkbook;
+import java.awt.AWTException;
+import jxl.write.Label;
+import javax.swing.JOptionPane;
+import jxl.Workbook;
+import java.io.File;
+import java.awt.Robot;
+import java.awt.datatransfer.DataFlavor;
+import java.io.IOException;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+
+// 
+// Decompiled by Procyon v0.5.36
+// 
+
+public class gedd implements ClipboardOwner {
+	private static Clipboard clipboard;
+
+	static {
+		gedd.clipboard = Toolkit.getDefaultToolkit
+
+		().getSystemClipboard();
+	}
+
+	@Override
+	public void lostOwnership(final Clipboard aClipboard, final
+
+	Transferable aContents) {
+	}
+
+	public static void limpa() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(17);
+		robot.keyPress(81);
+		robot.delay(10);
+		robot.keyRelease(17);
+		robot.keyRelease(81);
+		robot.delay(10);
+	}
+
+	public static void botaoesquerdo() throws AWTException {
+		final Robot robot = new Robot();
+		robot.mousePress(16);
+		robot.delay(10);
+		robot.mouseRelease(16);
+		robot.delay(10);
+	}
+
+	public static void cola() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(17);
+		robot.keyPress(86);
+		robot.delay(10);
+		robot.keyRelease(17);
+		robot.keyRelease(86);
+		robot.delay(10);
+	}
+
+	public static void enter() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(10);
+		robot.delay(10);
+		robot.keyRelease(10);
+		robot.delay(10);
+	}
+
+	public static void esc() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(27);
+		robot.delay(10);
+		robot.keyRelease(27);
+		robot.delay(10);
+	}
+
+	public static void copia() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(17);
+		robot.keyPress(67);
+		robot.delay(10);
+		robot.keyRelease(17);
+		robot.keyRelease(67);
+		robot.delay(10);
+	}
+
+	public static void shifttab() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(16);
+		robot.keyPress(9);
+		robot.delay(10);
+		robot.keyRelease(16);
+		robot.keyRelease(9);
+		robot.delay(10);
+	}
+
+	public static void setabaixo() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(40);
+		robot.delay(10);
+		robot.keyRelease(40);
+		robot.delay(10);
+	}
+
+	public static void tab() throws AWTException {
+		final Robot robot = new Robot();
+		robot.keyPress(9);
+		robot.delay(10);
+		robot.keyRelease(9);
+		robot.delay(10);
+	}
+
+	public void setClipboardContents(final String aString) throws
+
+	UnsupportedFlavorException, IOException {
+		System.out.println("entrou no set");
+		final StringSelection stringSelection = new StringSelection
+
+		(aString);
+		System.out.println("entrou no set1");
+		final Clipboard clipboard = Toolkit.getDefaultToolkit
+
+		().getSystemClipboard();
+		System.out.println("entrou no set2");
+		clipboard.setContents(stringSelection, this);
+		System.out.println("entrou no set3");
+	}
+
+	private static String getClipboardContents() throws
+
+	UnsupportedFlavorException, IOException {
+		System.out.println("entrou no get");
+		try {
+			if (gedd.clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+				System.out.println("entrou no get1");
+				return gedd.clipboard.getData(DataFlavor.stringFlavor).toString();
+
+			}
+			System.out.println("entrou no get2");
+			return "";
+
+		}
+
+		catch (IllegalStateException e) {
+			System.out.println("entrou no get3");
+			sleep(500L);
+			String cola = "erro";
+			cola = getClipboardContents();
+
+			return getClipboardContents();
+		}
+	}
+
+	private static void sleep(final long millissegundos) {
+		try {
+			Thread.sleep(millissegundos);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(final String[] args) throws IOException,
+
+			BiffException, WriteException, UnsupportedFlavorException {
+		try {
+			final gedd textTransfer = new gedd();
+			final Robot robot = new Robot();
+			final File fis = new File("C:\\Robo\\entrada.xls");
+			final Workbook workbook = Workbook.getWorkbook(fis);
+			final WritableWorkbook copy = Workbook.createWorkbook(new
+
+			File("C:\\Robo\\saida.xls"), workbook);
+			final Sheet sheet = workbook.getSheet("primeiro");
+			final int row = sheet.getRows();
+			final int col = sheet.getColumns();
+			final String[][] matriz = new String[row][col];
+			for (int j = 0; j < col; ++j) {
+				for (int i = 0; i < row; ++i) {
+					final Cell celula = sheet.getCell(j, i);
+					final String as2 = celula.getContents();
+					matriz[i][j] = as2;
+				}
+			}
+
+			final int tempo = Integer
+					.parseInt(JOptionPane.showInputDialog("Qual a velocidade? Ex: 1000 = 1 Segundo 1360x768"));
+			final WritableSheet sheet2 = copy.getSheet(0);
+			for (int linha = 1; linha < row; ++linha) {
+				try {
+					textTransfer.setClipboardContents(matriz[linha]
+
+					[0]);
+				} catch (IllegalStateException f2) {
+					System.out.println("entrou");
+					textTransfer.setClipboardContents(matriz[linha]
+
+					[0]);
+				}
+				robot.delay(10);
+				final String copia = getClipboardContents();
+				robot.delay(10);
+				final String[][] memoria = new String[8][8];
+				robot.mouseMove(365, 135);
+				robot.delay(10);
+				botaoesquerdo();
+				limpa();
+				robot.mouseMove(930, 210);
+				robot.delay(10);
+				botaoesquerdo();
+
+				cola();
+				robot.delay(tempo);
+				enter();
+				robot.delay(tempo);
+				robot.mouseMove(285, 371);
+				botaoesquerdo();
+				robot.delay(tempo);
+				esc();
+				robot.delay(10);
+				copia();
+				robot.delay(tempo);
+				esc();
+				robot.delay(10);
+				final String cola = getClipboardContents();
+				robot.delay(10);
+				if (!cola.equals(copia)) {
+					if (cola.equals("Inativo")) {
+						final WritableCell status = sheet2.getWritableCell(1, linha);
+						memoria[0][0] = cola;
+						final Label s = (Label) status;
+						s.setString(cola);
+					} else {
+						final WritableCell status = sheet2.getWritableCell(1, linha);
+						final Label s = (Label) status;
+						s.setString(cola);
+						memoria[0][0] = cola;
+						robot.mouseMove(280, 210);
+						robot.delay(10);
+						botaoesquerdo();
+						robot.delay(tempo);
+						shifttab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola2 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell nome = sheet2.getWritableCell(2, linha);
+						final Label n = (Label) nome;
+						n.setString(cola2);
+						robot.delay(10);
+						robot.mouseMove(1000, 165);
+						botaoesquerdo();
+						robot.delay(tempo);
+						robot.mouseMove(500, 455);
+						botaoesquerdo();
+						robot.delay(tempo);
+						robot.mouseMove(310, 55);
+						botaoesquerdo();
+						robot.delay(tempo);
+						robot.mouseMove(675, 475);
+						botaoesquerdo();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						String cola3 = getClipboardContents();
+						robot.delay(10);
+						while (cola3.equals(" 0,00")) {
+							setabaixo();
+							robot.delay(tempo);
+							esc();
+							robot.delay(10);
+							copia();
+							robot.delay(tempo);
+							esc();
+							robot.delay(10);
+							cola3 = getClipboardContents();
+						}
+						tab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola4 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell pago = sheet2.getWritableCell(3, linha);
+						final Label e = (Label) pago;
+						e.setString(cola4);
+						shifttab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola5 = getClipboardContents();
+						final WritableCell valor =
+
+								sheet2.getWritableCell(4, linha);
+						final Label f = (Label) valor;
+						f.setString(cola5);
+						shifttab();
+						robot.delay(tempo);
+						robot.delay(10);
+						copia();
+						robot.delay(tempo);
+						final String cola6 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell data = sheet2.getWritableCell(5, linha);
+						final Label g = (Label) data;
+						g.setString(cola6);
+						robot.delay(10);
+						setabaixo();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola7 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell data2 = sheet2.getWritableCell(8, linha);
+						final Label H = (Label) data2;
+						H.setString(cola7);
+						robot.delay(10);
+						tab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola8 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell VALOR2 = sheet2.getWritableCell(7, linha);
+						final Label I = (Label) VALOR2;
+						I.setString(cola8);
+						robot.delay(10);
+						tab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola9 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell PAGO2 = sheet2.getWritableCell(6, linha);
+						final Label K = (Label) PAGO2;
+						K.setString(cola9);
+						robot.delay(10);
+						setabaixo();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola10 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell PAGO3 = sheet2.getWritableCell(9, linha);
+						final Label L = (Label) PAGO3;
+						L.setString(cola10);
+						robot.delay(10);
+						shifttab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola11 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell VALOR3 = sheet2.getWritableCell(10, linha);
+						final Label M = (Label) VALOR3;
+						M.setString(cola11);
+						robot.delay(10);
+						shifttab();
+						robot.delay(tempo);
+						copia();
+						robot.delay(tempo);
+						final String cola12 = getClipboardContents();
+						robot.delay(10);
+						final WritableCell data3 = sheet2.getWritableCell(11, linha);
+						final Label O = (Label) data3;
+						O.setString(cola12);
+					}
+				} else {
+					try {
+						final WritableCell status = sheet2.getWritableCell(1, linha);
+						final Label s = (Label) status;
+						s.setString("numero nao Existe");
+					} catch (IllegalStateException z) {
+						final WritableCell status2 = sheet2.getWritableCell(1, linha);
+						final Label s2 = (Label) status2;
+						s2.setString("nao Existe");
+						copy.write();
+						copy.close();
+						JOptionPane.showMessageDialog(null, "FIM");
+					}
+				}
+				robot.delay(10);
+			}
+			copy.write();
+			copy.close();
+			JOptionPane.showMessageDialog(null, "FIM");
+		} catch (AWTException e2) {
+			System.out.println("deu erro");
+			e2.printStackTrace();
+		}
+	}
+
+}
+
